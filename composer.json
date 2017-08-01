@@ -1,0 +1,24 @@
+{
+  "name": "wesrice/inline-entries",
+  "description": "Fieldtype to inline entries in with a Matrix-like UI.",
+  "version": "1.0.0",
+  "type": "craft-plugin",
+  "minimum-stability": "dev",
+  "require": {
+    "craftcms/cms": "^3.0.0-beta.20"
+  },
+  "autoload": {
+    "psr-4": {
+      "wesrice\\inlineentries\\": "src/"
+    }
+  },
+  "support": {
+    "email": "wes@wesrice.com"
+  },
+  "extra": {
+    "handle": "inline-entries",
+    "name": "Inline Entries",
+    "developer": "Wes Rice",
+    "developerUrl": "https://wesrice.com"
+  }
+}

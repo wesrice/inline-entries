@@ -1,0 +1,79 @@
+{% if name is defined and name %}
+    <input type="hidden" name="{{ name }}" value="">
+{% endif -%}
+
+<div class="matrix matrix-field" id="{{ id }}">
+    <div class="blocks">
+        {% set totalNewElements = 0 %}
+        {% for element in elements %}
+            {% set elementId = element.id %}
+            {% if not elementId %}
+                {% set totalNewElements = totalNewElements + 1 %}
+                {% set elementId = 'new'~totalNewElements %}
+            {% endif %}
+
+            <div class="matrixblock{% if not block.enabled %} disabled{% endif %}" data-id="{{ elementId }}"{% if element.collapsed %} data-collapsed{% endif %}>
+                {% if not static %}
+                    <input type="hidden" name="{{ name }}[{{ elementId }}][type]" value="{{ element.getType().handle }}">
+                    <input type="hidden" name="{{ name }}[{{ elementId }}][enabled]" value="{% if element.enabled %}1{% endif %}">
+                    <div class="titlebar">
+                        <div class="blocktype">{{ element.getType().name|t('site') }}</div>
+                        <div class="preview"></div>
+                    </div>
+                    <div class="checkbox" title="{{ 'Select'|t('app') }}"></div>
+                    <div class="actions">
+                        <div class="status off" title="{{ 'Disabled'|t('app') }}"></div>
+                        <a class="settings icon menubtn" title="{{ 'Actions'|t('app') }}" role="button"></a>
+                        <div class="menu">
+                            <ul class="padded">
+                                <li><a data-icon="collapse" data-action="collapse">{{ "Collapse"|t('app') }}</a></li>
+                                <li class="hidden"><a data-icon="expand" data-action="expand">{{ "Expand"|t('app') }}</a></li>
+                                <li{% if not block.enabled %} class="hidden"{% endif %}><a data-icon="disabled" data-action="disable">{{ "Disable"|t('app') }}</a></li>
+                                <li{% if block.enabled %} class="hidden"{% endif %}><a data-icon="enabled" data-action="enable">{{ "Enable"|t('app') }}</a></li>
+                            </ul>
+                            <hr class="padded">
+                            <ul class="padded">
+                                {% for section in sections %}
+                                    <li><a data-icon="plus" data-action="add" data-type="{{ section.handle }}">{{ "Add {section} above"|t('app', { section: section.name|t('site') }) }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            <hr class="padded">
+                            <ul class="padded">
+                                <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
+                            </ul>
+                        </div>
+                        <a class="move icon" title="{{ 'Reorder'|t('app') }}" role="button"></a>
+                    </div>
+                {% endif %}
+                <div class="fields">
+                    {% include "_includes/fields" with {
+                        namespace: name~'['~elementId~'][fields]',
+                        element: element,
+                        fields: element.getType().getFieldLayout().getFields(),
+                        static: static
+                    } %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="buttons">
+        <div class="btngroup">
+            {% for section in sections %}
+                <div class="btn{% if loop.first %} add icon{% endif %}" data-type="{{ section.handle }}">{{ section.name|t('site') }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="btn add icon menubtn hidden">{{ "Add a block"|t('app') }}</div>
+        <div class="menu">
+            <ul>
+                {% for section in sections %}
+                    <li><a data-type="{{ section.handle }}">{{ section.name|t('site') }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% js %}
+{% endjs %}
